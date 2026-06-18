@@ -1,9 +1,9 @@
 {
-  "name": "corcoite-backend",
-  "type": "module",
-  "devDependencies": {
-    "@biomejs/biome": "2.5.0",
-    "lefthook": "^2.1.9",
-    "typescript": "^6.0.3"
-  }
+	"name": "corcoite-backend",
+	"type": "module",
+	"devDependencies": {
+		"@biomejs/biome": "2.5.0",
+		"lefthook": "^2.1.9",
+		"typescript": "^6.0.3"
+	}
 }
