@@ -1,80 +1,52 @@
-import type { Request, Response, NextFunction } from 'express';
-import type { CreateCustomerInput, UpdateCustomerInput } from '../schemas/customer.schema';
-import * as CustomerService from '../services/customer.service';
+import type { Request, Response } from 'express';
+import type {
+	CreateCustomer,
+	UpdateCustomer
+} from '../schemas/customer.schema.ts';
+import * as CustomerService from '../services/customer.service.ts';
 
-export async function getAllCustomers(_request: Request, response: Response, next: NextFunction) {
-	try {
-		const customers = await CustomerService.findAllCustomers();
-		response.status(200).json(customers);
-	} catch (error) {
-		next(error);
-	}
+export function getAllCustomers(_request: Request, response: Response): void {
+	const customers = CustomerService.findAllCustomers();
+
+	response.status(200).json(customers);
 }
 
-export async function getCustomerById(request: Request, response: Response, next: NextFunction) {
-	try {
-		const id = Number(request.params.id);
-		
-		if (isNaN(id)) {
-			return response.status(400).json({ message: 'ID inválido' });
-		}
+export function getCustomerById(request: Request, response: Response): void {
+	const id = Number(request.params.id);
 
-		const customer = await CustomerService.findCustomerById(id);
+	const customer = CustomerService.findCustomerById(id);
 
-		if (!customer) {
-			return response.status(404).json({ message: 'Cliente não encontrado' });
-		}
-
-		response.status(200).json(customer);
-	} catch (error) {
-		next(error);
-	}
+	response.status(200).json(customer);
 }
 
-export async function createCustomer(request: Request, response: Response, next: NextFunction) {
-	try {
-		const { name, email } = request.body as CreateCustomerInput;
-		const customer = await CustomerService.insertCustomer({ name, email });
-		
-		response.status(201).json(customer);
-	} catch (error) {
-		next(error);
-	}
+export function createCustomer(request: Request, response: Response): void {
+	const { name, email } = request.body as CreateCustomer;
+
+	const customer = CustomerService.insertCustomer({
+		name,
+		email
+	});
+
+	response.status(201).json(customer);
 }
 
-export async function updateCustomer(request: Request, response: Response, next: NextFunction) {
-	try {
-		const id = Number(request.params.id);
-		
-		if (isNaN(id)) {
-			return response.status(400).json({ message: 'ID inválido' });
-		}
+export function updateCustomer(request: Request, response: Response): void {
+	const id = Number(request.params.id);
+	const { name, email, status } = request.body as UpdateCustomer;
 
-		const { name, email, status } = request.body as UpdateCustomerInput;
-		const customer = await CustomerService.modifyCustomer(id, { name, email, status });
+	const customer = CustomerService.modifyCustomer(id, {
+		name,
+		email,
+		status
+	});
 
-		if (!customer) {
-			return response.status(404).json({ message: 'Cliente não encontrado para atualização' });
-		}
-
-		response.status(200).json(customer);
-	} catch (error) {
-		next(error);
-	}
+	response.status(200).json(customer);
 }
 
-export async function deleteCustomer(request: Request, response: Response, next: NextFunction) {
-	try {
-		const id = Number(request.params.id);
+export function deleteCustomer(request: Request, response: Response): void {
+	const id = Number(request.params.id);
 
-		if (isNaN(id)) {
-			return response.status(400).json({ message: 'ID inválido' });
-		}
-		
-		await CustomerService.removeCustomer(id); 
+	CustomerService.removeCustomer(id);
 
-		response.status(204).send();
-	} catch (error) {
-		next(error);
-	}
+	response.status(204).send();
 }

@@ -1,10 +1,21 @@
 import express from 'express';
-import CustomerRouter from './routes/customer.route.ts';
+import errorHandler from './middlewares/errorHandler.ts';
+import requestLogger from './middlewares/requestLogger.ts';
+import CustomerRouter from './routes/customer.router.ts';
 
 const app = express();
 
+app.use(requestLogger);
 app.use(express.json());
 
 app.use('/customers', CustomerRouter);
 
-app.listen(3000);
+app.use((_request, response) => {
+	response.status(404).json({
+		message: 'Not found!'
+	});
+});
+
+app.use(errorHandler);
+
+app.listen(Number(process.env.PORT));
