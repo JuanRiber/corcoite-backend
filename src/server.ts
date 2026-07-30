@@ -5,7 +5,7 @@ import errorHandler from './middlewares/errorHandler.ts';
 import CustomerRouter from './routes/customer.router.ts';
 
 const app = express();
-app.use(pinoHttp({}));
+app.use(pinoHttp({ logger }));
 
 app.use(express.json());
 
